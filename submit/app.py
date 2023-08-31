@@ -40,7 +40,7 @@ def save_to_database():
     cursor.close()
     connection.close()
     
-    return 'Data saved successfully'
+    return str(image_id)
 
 @app.route('/getprompt')
 def get_prompt():
