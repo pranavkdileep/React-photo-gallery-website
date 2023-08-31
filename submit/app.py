@@ -119,7 +119,7 @@ def upload_db():
     cursor = connection.cursor()
     qury = "INSERT INTO images (image_link, image_id, prompt, negative_prompt, height, width) VALUES (%s, %s, %s, %s, %s, %s)"
     values = (image_link, image_id, prompt, negative_prompt, height, width)
-    cursor.execute(query, values)
+    cursor.execute(qury, values)
     connection.commit()
     cursor.close()
     connection.close()
