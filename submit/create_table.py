@@ -1,10 +1,10 @@
 import mysql.connector
 
 connection = mysql.connector.connect(
-    host='sql.freedb.tech',
-    user='freedb_pkdart',
-    password='e2Q#U?#QD$2ms7v',
-    database='freedb_testingkk'
+    host='sql9.freesqldatabase.com',
+    user='sql9643553',
+    password='VL7BkQ7ta8',
+    database='sql9643553'
 )
 cursor = connection.cursor()
 

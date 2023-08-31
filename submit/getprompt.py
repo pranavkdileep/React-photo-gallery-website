@@ -1,10 +1,28 @@
-import requests
+import requests 
+import json
 import torch
 import modin.pandas as pd
 from diffusers import DiffusionPipeline
 from PIL import Image
 import numpy as np
 import random
+
+def get_prompt():
+    url = "https://orange-trout-gww74r967j62vwgr-5000.app.github.dev/getprompt"
+    response = requests.get(url)
+    response_json = response.json()
+    prompt = response_json.get("prompt")
+    negative_prompt = response_json.get("negative_prompt")
+    height = response_json.get("height")
+    width = response_json.get("width")
+    image_id = response_json.get("image_id")
+    return prompt, negative_prompt, height, width, image_id
+
+def del_image(image_id):
+    url = "https://orange-trout-gww74r967j62vwgr-5000.app.github.dev/del_image/" + str(image_id)
+    response = requests.get(url)
+    response_json = response.json()
+    return response_json
 
 def genie_and_save(prompt, negative_prompt, height, width, scale, steps, output_filename="image.png"):
     # Generate a random seed between 1 and 999999999999999999
@@ -35,45 +53,17 @@ def genie_and_save(prompt, negative_prompt, height, width, scale, steps, output_
     image.save(output_filename)
     print("Saved")
 
-def get_prompts():
-    
-    return results
+details = get_prompt()
+prompt = details[0]
+negative_prompt = details[1]
+height = details[2]
+width = details[3]
+image_id =details[4]
+print("Prompt: " + prompt)
+print("Negative Prompt: " + negative_prompt)
+print("Height: " + str(height))
+print("Width: " + str(width))
+print("image id: " + str(image_id))
 
-def delete_prompt(image_id):
-    # Connect to the MySQL database
-    connection = mysql.connector.connect(
-        host='sql.freedb.tech',
-        user='freedb_pkdart',
-        password='e2Q#U?#QD$2ms7v',
-        database='freedb_testingkk'
-    )
+del_image(image_id)
 
-    # Create a cursor object to execute SQL queries
-    cursor = connection.cursor()
-
-    # Define the SQL query to delete the prompt with the specified image_id
-    query = "DELETE FROM prompts WHERE image_id = %s"
-
-    # Execute the query with the image_id as a parameter
-    cursor.execute(query, (image_id,))
-
-    # Commit the changes to the database
-    connection.commit()
-
-    # Close the cursor and connection
-    cursor.close()
-    connection.close()
-
-
-prompts = get_prompts()
-for prompt in prompts:
-    image_id, prompt_text, negative_prompt, height, width = prompt
-    print(f"Image ID: {image_id}")
-    print(f"Prompt: {prompt_text}")
-    print(f"Negative Prompt: {negative_prompt}")
-    print(f"Height: {height}")
-    print(f"Width: {width}")
-    print()
-    output_filename = f"image{image_id}.png"
-    genie_and_save(prompt, negative_prompt, height, width, scale, steps, output_filename=output_filename)
-    delete_prompt(image_id)

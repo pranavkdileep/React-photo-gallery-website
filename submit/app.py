@@ -23,10 +23,10 @@ def save_to_database():
     
     # Create a connection to the MySQL database
     connection = mysql.connector.connect(
-        host='sql.freedb.tech',
-        user='freedb_pkdart',
-        password='e2Q#U?#QD$2ms7v',
-        database='freedb_testingkk'
+        host='sql9.freesqldatabase.com',
+        user='sql9643553',
+        password='VL7BkQ7ta8',
+        database='sql9643553'
     )
     cursor = connection.cursor()
     
@@ -45,29 +45,30 @@ def save_to_database():
 @app.route('/getprompt')
 def get_prompt():
     connection = mysql.connector.connect(
-        host='sql.freedb.tech',
-        user='freedb_pkdart',
-        password='e2Q#U?#QD$2ms7v',
-        database='freedb_testingkk'
+        host='sql9.freesqldatabase.com',
+        user='sql9643553',
+        password='VL7BkQ7ta8',
+        database='sql9643553'
     )
 
-    # Create a cursor object to execute SQL queries
     cursor = connection.cursor()
-
-    # Define the SQL query
-    query = "SELECT image_id, prompt, negative_prompt, height, width FROM prompts LIMIT 1"
-
-    # Execute the query
+    query = "SELECT COUNT(*) FROM prompts"
     cursor.execute(query)
-
-    # Fetch all the records from the result set
-    results = cursor.fetchall()
-
-    # Close the cursor and connection
-    cursor.close()
-    connection.close()
-    #return values as json
-    return results
+    count = cursor.fetchone()[0]
+    if count == 0:
+        return "No prompts in database"
+    else:
+        query = "SELECT * FROM prompts ORDER BY RAND() LIMIT 1"
+        cursor.execute(query)
+        prompt = cursor.fetchone()
+        response_data = {
+            'image_id': prompt[0],
+            'prompt': prompt[1],
+            'negative_prompt': prompt[2],
+            'height': prompt[3],
+            'width': prompt[4]
+        }
+        return jsonify(response_data)
 
 @app.route('/del_image/<image_id>', methods=['GET'])
 def del_image(image_id):
@@ -78,10 +79,10 @@ def del_image(image_id):
         'image_id': image_id
     }
     connection = mysql.connector.connect(
-        host='sql.freedb.tech',
-        user='freedb_pkdart',
-        password='e2Q#U?#QD$2ms7v',
-        database='freedb_testingkk'
+        host='sql9.freesqldatabase.com',
+        user='sql9643553',
+        password='VL7BkQ7ta8',
+        database='sql9643553'
     )
 
     # Create a cursor object to execute SQL queries
