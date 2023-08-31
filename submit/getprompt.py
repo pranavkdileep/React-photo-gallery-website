@@ -10,13 +10,16 @@ import random
 def get_prompt():
     url = "https://orange-trout-gww74r967j62vwgr-5000.app.github.dev/getprompt"
     response = requests.get(url)
-    response_json = response.json()
-    prompt = response_json.get("prompt")
-    negative_prompt = response_json.get("negative_prompt")
-    height = response_json.get("height")
-    width = response_json.get("width")
-    image_id = response_json.get("image_id")
-    return prompt, negative_prompt, height, width, image_id
+    if response.text == "No prompts in database":
+        return "No prompts in database"
+    else:
+        response_json = response.json()
+        prompt = response_json.get("prompt")
+        negative_prompt = response_json.get("negative_prompt")
+        height = response_json.get("height")
+        width = response_json.get("width")
+        image_id = response_json.get("image_id")
+        return prompt, negative_prompt, height, width, image_id
 
 def del_image(image_id):
     url = "https://orange-trout-gww74r967j62vwgr-5000.app.github.dev/del_image/" + str(image_id)
@@ -53,17 +56,21 @@ def genie_and_save(prompt, negative_prompt, height, width, scale, steps, output_
     image.save(output_filename)
     print("Saved")
 
-details = get_prompt()
-prompt = details[0]
-negative_prompt = details[1]
-height = details[2]
-width = details[3]
-image_id =details[4]
-print("Prompt: " + prompt)
-print("Negative Prompt: " + negative_prompt)
-print("Height: " + str(height))
-print("Width: " + str(width))
-print("image id: " + str(image_id))
 
-del_image(image_id)
+
+while True:
+    details = get_prompt()
+    if details == "No prompts in database":
+        print("No prompts in database")
+        continue
+    else:
+        prompt = details[0]
+        negative_prompt = details[1]
+        height = details[2]
+        width = details[3]
+        image_id = details[4]
+        output_filename = str(image_id) + ".png"
+        genie_and_save(prompt, negative_prompt, height, width, scale=10, steps=25, output_filename=output_filename)
+        print("Generated")
+        print(del_image(image_id))
 
