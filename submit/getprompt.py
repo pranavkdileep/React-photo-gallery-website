@@ -1,4 +1,4 @@
-import requests 
+import requests
 import json
 import torch
 import modin.pandas as pd
@@ -56,7 +56,38 @@ def genie_and_save(prompt, negative_prompt, height, width, scale, steps, output_
     image.save(output_filename)
     print("Saved")
 
+def upload_image(output_filename):
+    CLIENT_ID = "84c0409dd10cadb"
+    headers = {
+        'Authorization': f'Client-ID {CLIENT_ID}'
+    }
+    url = 'https://api.imgur.com/3/upload.json'
+    data = {
+        'image': open(output_filename, 'rb').read(),
+    }
+    response = requests.post(url, headers=headers, data=data)
+    json_response = response.json()
 
+    if response.status_code == 200 and json_response.get('data'):
+        link = json_response['data']['link']
+        print("Image uploaded successfully. Link:", link)
+        return link
+    else:
+        print("Error uploading image:", json_response.get('data', {}).get('error', 'Unknown error'))
+        return "Error uploading image:", json_response.get('data', {}).get('error', 'Unknown error')
+    
+def upload_db(image_link, image_id, prompt, negative_prompt, height, width):
+    url = "https://orange-trout-gww74r967j62vwgr-5000.app.github.dev/upload_db"
+    data = {
+        'image_link': image_link,
+        'image_id': image_id,
+        'prompt': prompt,
+        'negative_prompt': negative_prompt,
+        'height': height,
+        'width': width
+    }
+    response = requests.post(url, data=data)
+    return response.text
 
 while True:
     details = get_prompt()
@@ -73,4 +104,7 @@ while True:
         genie_and_save(prompt, negative_prompt, height, width, scale=10, steps=25, output_filename=output_filename)
         print("Generated")
         print(del_image(image_id))
+        image_link = upload_image(output_filename)
+        print(image_link)
+        print(upload_db(image_link, image_id, prompt, negative_prompt, height, width))
 

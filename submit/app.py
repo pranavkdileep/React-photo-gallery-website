@@ -102,5 +102,29 @@ def del_image(image_id):
     connection.close()
     return jsonify(response_data)
 
+@app.route('/upload_db', methods=['POST'])
+def upload_db():
+    image_link = request.form['image_link']
+    image_id = request.form['image_id']
+    prompt = request.form['prompt']
+    negative_prompt = request.form['negative_prompt']
+    height = request.form['height']
+    width = request.form['width']
+    connection = mysql.connector.connect(
+        host='sql9.freesqldatabase.com',
+        user='sql9643553',
+        password='VL7BkQ7ta8',
+        database='sql9643553'
+    )
+    cursor = connection.cursor()
+    qury = "INSERT INTO images (image_link, image_id, prompt, negative_prompt, height, width) VALUES (%s, %s, %s, %s, %s, %s)"
+    values = (image_link, image_id, prompt, negative_prompt, height, width)
+    cursor.execute(query, values)
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return 'Data saved successfully'
+
+
 if __name__ == '__main__':
     app.run()
