@@ -2,8 +2,12 @@ from flask import Flask, render_template, request
 import mysql.connector
 import random
 from flask import jsonify
+import os
 
-
+dbhost = os.environ.get('DB_HOST') or 'sql9.freesqldatabase.com'
+user = os.environ.get('DB_USER') or 'sql9643553'
+password = os.environ.get('DB_PASSWORD') or 'VL7BkQ7ta8'
+database = os.environ.get('DB_DATABASE') or 'sql9643553'
 
 
 app = Flask(__name__,template_folder="template")
@@ -23,10 +27,10 @@ def save_to_database():
     
     # Create a connection to the MySQL database
     connection = mysql.connector.connect(
-        host='sql9.freesqldatabase.com',
-        user='sql9643553',
-        password='VL7BkQ7ta8',
-        database='sql9643553'
+        host=dbhost,
+        user=user,
+        password=password,
+        database=database
     )
     cursor = connection.cursor()
     
@@ -45,10 +49,10 @@ def save_to_database():
 @app.route('/getprompt')
 def get_prompt():
     connection = mysql.connector.connect(
-        host='sql9.freesqldatabase.com',
-        user='sql9643553',
-        password='VL7BkQ7ta8',
-        database='sql9643553'
+        host=dbhost,
+        user=user,
+        password=password,
+        database=database
     )
 
     cursor = connection.cursor()
@@ -79,10 +83,10 @@ def del_image(image_id):
         'image_id': image_id
     }
     connection = mysql.connector.connect(
-        host='sql9.freesqldatabase.com',
-        user='sql9643553',
-        password='VL7BkQ7ta8',
-        database='sql9643553'
+        host=dbhost,
+        user=user,
+        password=password,
+        database=database
     )
 
     # Create a cursor object to execute SQL queries
@@ -111,19 +115,26 @@ def upload_db():
     height = request.form['height']
     width = request.form['width']
     connection = mysql.connector.connect(
-        host='sql9.freesqldatabase.com',
-        user='sql9643553',
-        password='VL7BkQ7ta8',
-        database='sql9643553'
+        host=dbhost,
+        user=user,
+        password=password,
+        database=database
     )
     cursor = connection.cursor()
-    qury = "INSERT INTO images (image_link, image_id, prompt, negative_prompt, height, width) VALUES (%s, %s, %s, %s, %s, %s)"
-    values = (image_link, image_id, prompt, negative_prompt, height, width)
-    cursor.execute(qury, values)
-    connection.commit()
-    cursor.close()
-    connection.close()
-    return 'Data saved successfully'
+    #check if image_id already exists
+    query = "SELECT COUNT(*) FROM images WHERE image_id = %s"
+    cursor.execute(query, (image_id,))
+    count = cursor.fetchone()[0]
+    if count != 0:
+        return 'Image ID already exists'
+    else:
+        qury = "INSERT INTO images (image_link, image_id, prompt, negative_prompt, height, width) VALUES (%s, %s, %s, %s, %s, %s)"
+        values = (image_link, image_id, prompt, negative_prompt, height, width)
+        cursor.execute(qury, values)
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return 'Data saved successfully'
 
 
 if __name__ == '__main__':
