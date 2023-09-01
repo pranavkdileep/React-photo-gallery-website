@@ -34,7 +34,7 @@ def save_to_database():
     )
     cursor = connection.cursor()
     
-    # Save the data to the database
+    # Save the data to the databasej
     query = "INSERT INTO prompts (image_id, prompt, negative_prompt, height, width) VALUES (%s, %s, %s, %s, %s)"
     values = (image_id, prompt, negative_prompt, height, width)
     cursor.execute(query, values)
