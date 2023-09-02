@@ -10,6 +10,8 @@ import ShareIcon from '@mui/icons-material/Share';
 import BackupIcon from '@mui/icons-material/Backup';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import { useEffect } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import Art from './Components/Art';
 
 function App() {
   useEffect(() => {
@@ -44,7 +46,20 @@ function App() {
           <MenuContainer icon={<Add/>}/>
           </div>
         </div>
-        <main></main>
+        <main>
+          <div className='searchBox'>
+            <input type="text" placeholder="Search"/>
+            <div className="searchIcon">
+                <SearchIcon/>
+              </div>
+          </div>
+          <div className="gallery">
+            <Art/>
+            <Art/>
+            <Art/>
+            <Art/>
+            </div>
+        </main>
     </div>
   );
 }
