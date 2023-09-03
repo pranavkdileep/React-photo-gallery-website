@@ -12,6 +12,8 @@ import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import { useEffect } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import Art from './Components/Art';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+
 
 function App() {
   useEffect(() => {
@@ -25,6 +27,22 @@ function App() {
       item.addEventListener('click', () => {
         //only one time
         gotolink(index)
+      })
+    })
+    function gotofilter(n){
+      var filteritrms = document.querySelectorAll('.filterItem')
+      filteritrms.forEach((item, index) => {
+        item.style.color = 'black'
+        item.style.backgroundColor = '#ffffff'
+      })
+      filteritrms[n].style.color = '#ffffff'
+      filteritrms[n].style.backgroundColor = '#000000'
+    }
+    var filteritrms = document.querySelectorAll('.filterItem')
+    filteritrms.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        //only one time
+        gotofilter(index)
       })
     })
     
@@ -46,21 +64,43 @@ function App() {
           <MenuContainer icon={<Add/>}/>
           </div>
         </div>
+      
         <main>
+          <div className="title">
+            <h1>Ai Gallery</h1>
+            <p>Explore the world of art</p>
+          </div>
           <div className='searchBox'>
             <input type="text" placeholder="Search"/>
             <div className="searchIcon">
                 <SearchIcon/>
-              </div>
           </div>
+          </div>
+          <div className="filter">
+            <div className="filterItem">
+              <p>Recent</p>
+            </div>
+            <div className="filterItem">
+              <p>Trending</p>
+            </div>
+            <div className="filterItem">
+              <p>Most Liked</p>
+
+            </div>
+            </div>
+          
           <div className="gallery">
-            <Art/>
-            <Art/>
-            <Art/>
-            <Art/>
+            <Art size = {'x'} d_icon = {<DownloadForOfflineIcon/>}/>
+            <Art size = {'xl'} d_icon = {<DownloadForOfflineIcon/>}/>
+            <Art size = {'m'} d_icon = {<DownloadForOfflineIcon/>}/>
+            <Art size = {'xl'} d_icon = {<DownloadForOfflineIcon/>}/>
+            <Art size = {'x'} d_icon = {<DownloadForOfflineIcon/>}/>
+            <Art size = {'m'} d_icon = {<DownloadForOfflineIcon/>}/>
+            <Art size = {'xl'} d_icon = {<DownloadForOfflineIcon/>}/>
+            <Art size = {'x'} d_icon = {<DownloadForOfflineIcon/>}/>
             </div>
         </main>
-    </div>
+      </div>
   );
 }
 
